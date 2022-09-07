@@ -1,13 +1,37 @@
 import React, { useState } from 'react';
 import EditTask from './modals/EditTask';
+import Swal from "sweetalert2";
 
 const Card = ({taskObj, index, deleteTask, updateListArray}) => {
 
     const [modal, setModal] = useState(false);
 
     const handleDelete = ()=>{
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            
+            if (result.isConfirmed) {
+                deleteTask(index);
+              Swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              )
+            }
+          })
+
+        // if(window.confirm('Delete the item?')){
+        //     deleteTask(index);
+        // }
         
-        deleteTask(index);
     }
 
     const toggle = () =>{
