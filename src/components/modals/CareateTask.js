@@ -7,7 +7,7 @@ const CareateTask = ({ modal, toggle, save }) => {
     const [description, setDescrition] = useState('');
 
     const handleChange = (e) => {
-        
+
         const { name, value } = e.target
 
         if (name === 'taskName') {
@@ -18,20 +18,21 @@ const CareateTask = ({ modal, toggle, save }) => {
     }
 
     const handleSave = () => {
-        let taskObj = {}
+
         if (taskName == '' || description == '') {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: 'Please Fill All Inputs',
-              })
+            })
         } else {
-            taskObj["Name"] = taskName
-            taskObj["Description"] = description
-            save(taskObj)
-            let emptyInp = '';
-            setTaskName(emptyInp)
-            setDescrition(emptyInp)
+            save({
+                id: Math.random(),
+                taskName,
+                description
+            });
+            setDescrition('');
+            setTaskName('');
         }
     }
 
@@ -39,6 +40,7 @@ const CareateTask = ({ modal, toggle, save }) => {
         <Modal isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>Add Task</ModalHeader>
             <ModalBody>
+                
                 <form>
                     <div class="form-group">
                         <label>Task Title</label>
@@ -50,6 +52,7 @@ const CareateTask = ({ modal, toggle, save }) => {
                         <textarea class="form-control" value={description} onChange={handleChange} name="description" placeholder='Enter Description.....' rows="5"></textarea>
                     </div>
                 </form>
+
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={handleSave}>

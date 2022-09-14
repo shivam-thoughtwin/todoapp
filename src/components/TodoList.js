@@ -15,10 +15,10 @@ const TodoList = () => {
             let obj = JSON.parse(arr);
             setTaskList(obj)
         }
-    }, [])
+    }, []);
 
     const deleteTask = (index) => {
-        
+
         let tempList = taskList;
         tempList.splice(index, 1)
         localStorage.setItem("taskList", JSON.stringify(tempList));
@@ -31,47 +31,61 @@ const TodoList = () => {
     }
 
     const saveTask = (taskObj) => {
-        let getArr = localStorage.getItem("taskList")
-        let newArr = [];
-        newArr = JSON.parse(getArr);
 
-        var found = newArr.find(e => e.Name === taskObj.Name);
-        if (found) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Title ALready Exits !!',
-              })
+
+        let tasklistLocal = localStorage.getItem("taskList") || '';
+        debugger
+        if (tasklistLocal) {
+            // task hai
+            tasklistLocal = JSON.parse(tasklistLocal);
+
+            const foundTask = tasklistLocal.find(task => task?.taskName?.toLowerCase() === taskObj?.taskName?.toLowerCase());
+
+            if (foundTask) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Title ALready Exits !!',
+                })
+            } else {
+                const allTasks = [...taskList, taskObj]
+                localStorage.setItem("taskList", JSON.stringify(allTasks));
+                setTaskList(allTasks);
+                setModal(false);
+            }
         } else {
-            let tempList = taskList
-            tempList.push(taskObj);
-            localStorage.setItem("taskList", JSON.stringify(tempList));
-            setTaskList(tempList);
-            setModal(false)
+            // nahi hai
+            localStorage.setItem("taskList", JSON.stringify([taskObj]));
+            setTaskList([taskObj]);
+            setModal(false);
         }
     }
 
     const updateListArray = (obj, index) => {
 
-        let getArr = localStorage.getItem("taskList")
-        let newArr = [];
-        newArr = JSON.parse(getArr);
+        let getArr = localStorage.getItem("taskList") || '';
+        
+        getArr = getArr ? JSON.parse(getArr): getArr;
+        
+        if (getArr) {
+            const isExist = getArr.findIndex(t => t.id === obj.id);
+            debugger
+            if (isExist && isExist !== -1) {  
 
-        var found = newArr.find(e => e.Name === obj.Name);
-        if (found) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Title ALready Exits !!',
-              })
-        } else {
-        let tempList = taskList
-        tempList[index] = obj
-        localStorage.setItem("taskList", JSON.stringify(tempList))
-        setTaskList(tempList)
-        window.location.reload();
+                debugger               
+                getArr[isExist].description = obj.description;
+                localStorage.setItem("taskList", JSON.stringify(getArr));
+                setTaskList(getArr);
+            } else {
+
+                debugger
+                getArr[isExist] = obj;
+                localStorage.setItem("taskList", JSON.stringify(getArr));
+                setTaskList(getArr);
+            }
         }
     }
+
 
     return (
         <>
